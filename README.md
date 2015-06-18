@@ -1,11 +1,12 @@
-Phillips CMS
+Affordable Programmers Custom CMS, 
+Multi Language Content Management System, Product & Warehouse, Human Resources, Software & Licensing and WebSite Administator Framework
 =============
 
 ### Laravel 5 Content Managment System
 
 ### just an example, needs further development!
 
-## in development and not stable!
+## not stable!
 
 ## Phillips CMS Ver. 1.0.0
 ##### Change log:
@@ -34,10 +35,10 @@ Phillips CMS
   * Site settings
   * Log view page
 * Frontend
-  * Article  
+  * Article (momentjs)
   * Page
   * News
-  * Photo Gallery 
+  * Photo Gallery (Lazy load image, responsive fancybox)
   * Contact Form
   * Breadcrumbs
   * Route cache
@@ -57,7 +58,7 @@ Phillips CMS
 Please check the system requirements before installing Phillips CMS.
 
 1. You may install by cloning from github, or via composer.
-  * Github: `git clone git@github.com:phillipmadsen/development.git`
+  * Github: `git clone git@github.com:phillipmadsen/dev.grace.git`
  
 2. From a command line open in the folder, run `composer install`.
 3. Enter your database details into `app/config/database.php`.
@@ -70,7 +71,6 @@ Please check the system requirements before installing Phillips CMS.
   * ...
 
 ## Credits
- * <http://www.affordableprogrammer.com/>
  * <http://almsaeedstudio.com/preview/>
  * <http://www.dropzonejs.com/>
  * <http://ckeditor.com/>
