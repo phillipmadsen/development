@@ -24,10 +24,10 @@ Affordable Programmers Custom CMS,
 
 ## being developed and not stable!
 
-## Phillips Custom Business Management Framework Ver. 1.0.0
-##### Change log:
+## Phillips Custom Business Management Framework 
+## Ver. 1.0.0
  
-## Features
+### Features
 
 * Laravel 5
 * Bootstrap
@@ -59,7 +59,7 @@ Affordable Programmers Custom CMS,
   * Breadcrumbs
   * Route cache
  
-## Todo
+### Todo
 
 * User (Cartalyst Sentry)
   * Groups,
@@ -69,7 +69,7 @@ Affordable Programmers Custom CMS,
   * User Suspension
   * User Banning
 
-## Installation
+### Installation
 
 Please check the system requirements before installing Phillips CMS.
 
@@ -86,7 +86,7 @@ Please check the system requirements before installing Phillips CMS.
   * post per page
   * ...
 
-## Credits
+#### Credits
  * <http://almsaeedstudio.com/preview/>
  * <http://www.dropzonejs.com/>
  * <http://ckeditor.com/>
@@ -98,6 +98,8 @@ Please check the system requirements before installing Phillips CMS.
  * <https://github.com/tuupola/jquery_lazyload>
  * <https://github.com/mikemand/logviewer/>
 ...
+
+##### Change log:
 
 ## Screenshots
 
