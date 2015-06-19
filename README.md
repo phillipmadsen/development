@@ -7,8 +7,15 @@ Affordable Programmers Custom CMS,
 * Human Resources
 * Software & Licensing 
 * Website Manager 
+* eCommerce Suite
+* Customer profiles and account management
   * Frontend of sites
   * Backend Conent Manager
+  * FAQs
+  * Blog Articles
+  * Full microdata and shema.og 
+  * galleries
+  * ecommerce products and management
 
 ##### with more to come
  
