@@ -1,14 +1,23 @@
-Affordable Programmers Custom CMS, 
-Multi Language Content Management System, Product & Warehouse, Human Resources, Software & Licensing and WebSite Administator Framework
+Affordable Programmers Custom CMS,
 =============
+![AffordableProgammer](http://www.affordableprogrammer.com/wp-content/uploads/2015/06/ap-logo-rect.png) 
+### Multi Language Content Management System
+#### Made to manage the following parts of a business:
+* Product & Warehouse
+* Human Resources
+* Software & Licensing 
+* Website Manager 
+  * Frontend of sites
+  * Backend Conent Manager
 
-### Laravel 5 Content Managment System
+##### with more to come
+ 
 
 ### just an example, needs further development!
 
-## not stable!
+## being developed and not stable!
 
-## Phillips CMS Ver. 1.0.0
+## Phillips Custom Business Management Framework Ver. 1.0.0
 ##### Change log:
  
 ## Features
@@ -42,7 +51,7 @@ Multi Language Content Management System, Product & Warehouse, Human Resources, 
   * Contact Form
   * Breadcrumbs
   * Route cache
-
+ 
 ## Todo
 
 * User (Cartalyst Sentry)
