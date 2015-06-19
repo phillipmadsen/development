@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/4.3.1/css/foundation.min.css" />
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" />
+	<link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700' rel='stylesheet' type='text/css'>
+	<link rel="shortcut icon" href="./assets/ico/favicon.png">
+	<link rel="stylesheet" href="./assets/css/page.css" />
+	<title>Laravel Cheat Sheet</title>
+</head>
+<body>
+	<div class="fixed">
+		<nav class="top-bar">
+			<ul class="title-area">
+				<li class="name"><h1><a href="#">Laravel Cheat Sheet</a></h1></li>
+				<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+			</ul>
+			<section class="top-bar-section">
+				<ul class="left">
+					<li class="comments-toggle"><a href="#"><i class="icon-comments"></i> Toggle Code Comments</a></li>
+					<li><a href="http://github.com/jesseobrien/laravel-cheatsheet"><i class="icon-github"></i> Github</a></li>
+				</ul>
+			</section>
+		</nav>
+	</div>
+
+	<div class="row full-width">
+		<div class="large-4 columns code-column">
+		
+		
+			<h4><a name="artisan" href="#routing">Artisan</a></h4>
+			<pre class="prettyprint lang-php">
+php artisan migrate:make create_users_table
+php artisan migrate
+php artisan migrate --env=local
+php artisan migrate:rollback
+php artisan migrate:reset
+php artisan migrate:refresh
+php artisan db:seed
+php artisan config:publish
+php artisan serve
+php artisan list
+			</pre>
+
+			<h4><a name="composer" href="#routing">Composer</a></h4>
+			<pre class="prettyprint lang-php">
+composer create-project laravel/laravel folder_name
+composer install
+composer update
+composer dump-autoload
+composer self-update
+			</pre>
+		
+		
+		
+			<h4><a name="routing" href="#routing">Routing</a></h4>
+			<pre class="prettyprint lang-php">Route::get('foo', function(){});
+Route::get('foo', 'ControllerName@function');
+Route::controller('foo', 'FooController');
+			</pre>
+
+			<h6>Triggering Errors</h6>
+			<pre class="prettyprint lang-php">App::abort(404);
+App::missing(function($exception){});
+throw new NotFoundHttpException;
+			</pre>
+
+			<h6>Route Parameters</h6>
+			<pre class="prettyprint lang-php">Route::get('foo/{bar}', function($bar){});
+Route::get('foo/{bar?}', function($bar = 'bar'){});
+			</pre>
+
+			<h6>HTTP Verbs</h6>
+			<pre class="prettyprint lang-php">Route::any('foo', function(){});
+Route::post('foo', function(){});
+Route::put('foo', function(){});
+Route::patch('foo', function(){});
+Route::delete('foo', function(){});
+Route::resource('foo', 'FooController'); // RESTful actions
+			</pre>
+
+			<h6>Secure Routes</h6>
+			<pre class="prettyprint lang-php">Route::get('foo', array('https', function(){}));</pre>
+
+			<h6>Route Constraints</h6>
+			<pre class="prettyprint lang-php">Route::get('foo/{bar}', function($bar){})
+	->where('bar', '[0-9]+');
+Route::get('foo/{bar}/{baz}', function($bar, $baz){})
+	->where(array('bar' => '[0-9]+', 'baz' => '[A-Za-z]'))
+			</pre>
+
+			<h6>Filters</h6>
+			<pre class="prettyprint lang-php">Route::filter('auth', function(){}); // Declare an auth filter
+Route::filter('foo', 'FooFilter'); // Register a class as a filter
+Route::get('foo', array('before' => 'auth', function(){}));
+// Routes in this group are guarded by the 'auth' filter
+Route::group(array('before' => 'auth'), function(){});
+Route::when('foo/*', 'foo'); // Pattern filter
+Route::when('foo/*', 'foo', array('post')); // HTTP verb pattern
+			</pre>
+
+			<h6>Named Routes</h6>
+			<pre class="prettyprint lang-php">Route::currentRouteName();
+Route::get('foo/bar', array('as' => 'foobar', function(){}));
+			</pre>
+
+			<h6>Route Prefixing</h6>
+			<pre class="prettyprint lang-php">// This route group will carry the prefix 'foo'
+Route::group(array('prefix' => 'foo'), function(){})
+			</pre>
+
+			<h6>Sub-Domain Routing</h6>
+			<pre class="prettyprint lang-php">// {sub} will be passed to the closure
+Route::group(array('domain' => '{sub}.example.com'), function(){});
+			</pre>
+
+		<h4><a name="urls" href="#urls">URLs</a></h4>
+			<pre class="prettyprint lang-php">URL::full();
+URL::current();
+URL::previous();
+URL::to('foo/bar', $parameters, $secure);
+URL::action('FooController@method', $parameters, $absolute);
+URL::route('foo', $parameters, $absolute);
+URL::secure('foo/bar', $parameters);
+URL::asset('css/foo.css', $secure);
+URL::secureAsset('css/foo.css');
+URL::isValidUrl('http://example.com');
+URL::getRequest();
+URL::setRequest($request);
+URL::getGenerator();
+URL::setGenerator($generator);
+			</pre>
+
+
+			<h4><a name="events" href="#events">Events</a></h4>
+			<pre class="prettyprint lang-php">Event::fire('foo.bar', array($bar));
+Event::listen('foo.bar', function($bar){});
+Event::listen('foo.*', function($bar){});
+Event::listen('foo.bar', 'FooHandler', 10);
+Event::listen('foo.bar', 'BarHandler', 5);
+Event::listen('foor.bar', function($event){ return false; });
+Event::queue('foo', array($bar));
+Event::flusher('foo', function($bar){});
+Event::flush('foo');
+Event::subscribe(new FooEventHandler);
+			</pre>
+			
+			<h4><a name="db" href="#db">DB</a></h4>
+			<pre class="prettyprint lang-php">
+$results = DB::select('select * from users where id = ?', array('value'));
+DB::insert('insert into users (id, name) values (?, ?)', array(1, 'Dayle'));
+DB::update('update users set votes = 100 where name = ?', array('John'));
+DB::delete('delete from users');
+DB::statement('drop table users');
+DB::listen(function($sql, $bindings, $time){ code_here() });
+DB::transaction(function(){  code_here() });
+			</pre>
+
+			<h4><a name="eloquent" href="#eloquent">Eloquent</a></h4>
+			<pre class="prettyprint lang-php">Model::create(array('key' => 'value'));
+Model::destroy(1);
+Model::all();
+Model::find(1);
+Model::findOrFail(1); // Trigger an exception
+Model::where('foo', '=', 'bar')->get();
+Model::where('foo', '=', 'bar')->first();
+Model::where('foo', '=', 'bar')->firstOrFail(); // Exception
+Model::where('foo', '=', 'bar')->count();
+Model::where('foo', '=', 'bar')->delete();
+Model::whereRaw('foo = bar and cars = 2', array(20))->get();
+Model::on('connection-name')->find(1);
+Model::with('relation')->get();
+Model::all()->take(10);
+Model::all()->skip(10);
+			</pre>
+
+			<h6>Soft Delete</h6>
+			<pre class="prettyprint lang-php">Model::withTrashed()->where('cars', 2)->get();
+Model::withTrashed()->where('cars', 2)->restore();
+Model::where('cars', 2)->forceDelete();
+Model::onlyTrashed()->where('cars', 2)->get();
+			</pre>
+
+			<h6>Events</h6>
+			<pre class="prettyprint lang-php">Model::creating(function($model){});
+Model::created(function($model){});
+Model::updating(function($model){});
+Model::updated(function($model){});
+Model::saving(function($model){});
+Model::saved(function($model){});
+Model::deleting(function($model){});
+Model::deleted(function($model){});
+Model::observe(new FooObserver);
+			</pre>
+
+
+			<h4><a name="mail" href="#mail">Mail</a></h4>
+			<pre class="prettyprint lang-php">Mail::send('email.view', $data, function($message){});
+Mail::send(array('html.view', 'text.view'), $data, $callback);
+Mail::queue('email.view', $data, function($message){});
+Mail::queueOn('queue-name', 'email.view', $data, $callback);
+Mail::later(5, 'email.view', $data, function($message){});
+Mail::pretend(); // Write all email to logs instead of sending
+			</pre>
+
+			<h4><a name="queues" hre="#queues">Queues</a></h4>
+			<pre class="prettyprint lang-php">Queue::push('SendMail', array('message' => $message));
+Queue::push('SendEmail@send', array('message' => $message));
+Queue::push(function($job) use $id {});
+php artisan queue:listen
+php artisan queue:listen connection
+php artisan queue:listen --timeout=60
+php artisan queue:work
+			</pre>
+
+			<h4><a name="localization" href="#localization">Localization</a></h4>
+			<pre class="prettyprint lang-php">App::setLocale('en');
+Lang::get('messages.welcome');
+Lang::get('messages.welcome', array('foo' => 'Bar'));
+Lang::has('messages.welcome');
+Lang::choice('messages.apples', 10);
+			</pre>
+
+			<h4><a name="files" href="#files">Files</a></h4>
+			<pre class="prettyprint lang-php">File::exists('path');
+File::get('path');
+File::getRemote('path');
+File::getRequire('path');
+File::requireOnce('path');
+File::put('path', 'contents');
+File::append('path', 'data');
+File::delete('path');
+File::move('path', 'target');
+File::copy('path', 'target');
+File::extension('path');
+File::type('path');
+File::size('path');
+File::lastModified('path');
+File::isDirectory('directory');
+File::isWritable('path');
+File::isFile('file');
+File::glob($patterns, $flag);
+// Find path names matching a given pattern.
+File::files('directory');
+// Get an array of all files in a directory.
+File::allFiles('directory');
+// Get all of the files from the given directory (recursive).
+File::directories('directory');
+// Get all of the directories within a given directory.
+File::makeDirectory('path',  $mode = 0777, $recursive = false);
+File::copyDirectory('directory', 'destination', $options = null);
+File::deleteDirectory('directory', $preserve = false);
+File::cleanDirectory('directory');
+			</pre>
+		</div>
+		<div class="large-4 columns code-column">
+			<h4><a name="input" href="#input">Input</a></h4>
+			<pre class="prettyprint lang-php">Input::get('key');
+Input::get('key', 'default'); // Default if the key is missing
+Input::has('key');
+Input::all();
+// Only retrieve 'foo' and 'bar' when getting input
+Input::only('foo', 'bar');
+// Disregard 'foo' when getting input
+Input::except('foo');
+			</pre>
+
+			<h6>Session Input (flash)</h6>
+			<pre class="prettyprint lang-php">// Flash input to the session
+Input::flash();
+Input::flashOnly('foo', 'bar');
+Input::flashExcept('foo', 'baz');
+Input::old('key','default_value');
+			</pre>
+
+			<h6>Files</h6>
+			<pre class="prettyprint lang-php">// Use a file that's been uploaded
+Input::file('filename');
+// Determine if a file was uploaded
+Input::hasFile('filename');
+// Access file properties
+Input::file('name')->getRealPath();
+Input::file('name')->getClientOriginalName();
+Input::file('name')->getSize();
+Input::file('name')->getMimeType();
+// Move an uploaded file
+Input::file('name')->move($destinationPath);
+// Move an uploaded file
+Input::file('name')->move($destinationPath, $fileName);
+			</pre>
+
+			<h4><a name="cache" href="#cache">Cache</a></h4>
+			<pre class="prettyprint lang-php">Cache::put('key', 'value', $minutes);
+Cache::add('key', 'value', $minutes);
+Cache::forever('key', 'value');
+Cache::remember('key', $minutes, function(){ return 'value' });
+Cache::rememberForever('key', function(){ return 'value' });
+Cache::forget('key');
+Cache::has('key');
+Cache::get('key');
+Cache::get('key', 'default');
+Cache::get('key', function(){ return 'default'; });
+Cache::increment('key');
+Cache::increment('key', $amount);
+Cache::decrement('key');
+Cache::decrement('key', $amount);
+Cache::section('group')->put('key', $value);
+Cache::section('group')->get('key');
+Cache::section('group')->flush();
+			</pre>
+
+			<h4><a name="cookies" href="#cookies">Cookies</a></h4>
+			<pre class="prettyprint lang-php">Cookie::get('key');
+// Create a cookie that lasts for ever
+Cookie::forever('key', 'value');
+// Send a cookie with a response
+$response = Response::make('Hello World');
+$response->withCookie(Cookie::make('name', 'value', $minutes));
+			</pre>
+
+			<h4><a name="sessions" href="#sessions">Sessions</a></h4>
+			<pre class="prettyprint lang-php">Session::get('key');
+Session::get('key', 'default');
+Session::get('key', function(){ return 'default'; });
+Session::put('key', 'value');
+Session::all();
+Session::has('key');
+Session::forget('key');
+Session::flush();
+Session::regenerate();
+Session::flash('key', 'value');
+Session::reflash();
+Session::keep(array('key1', 'key2'));
+			</pre>
+
+			<h4><a name="requests" href="#requests">Requests</a></h4>
+			<pre class="prettyprint lang-php">Request::path();
+Request::is('foo/*');
+Request::url();
+Request::segment(1);
+Request::header('Content-Type');
+Request::server('PATH_INFO');
+Request::ajax();
+Request::secure();
+			</pre>
+
+			<h4><a name="responses" href="#responses">Responses</a></h4>
+			<pre class="prettyprint lang-php">return Response::make($contents);
+return Response::make($contents, 200);
+return Response::json(array('key' => 'value'));
+return Response::json(array('key' => 'value'))
+	->setCallback(Input::get('callback'));
+return Response::download($filepath);
+return Response::download($filepath, $filename, $headers);
+// Create a response and modify a header value
+$response = Response::make($contents, 200);
+$response->header('Content-Type', 'application/json');
+return $response;
+// Attach a cookie to a response
+return Response::make($content)
+	->withCookie(Cookie::make('key', 'value'));
+			</pre>
+
+			<h4><a name="redirects" href="#redirects">Redirects</a></h4>
+			<pre class="prettyprint lang-php">return Redirect::to('foo/bar');
+return Redirect::to('foo/bar')->with('key', 'value');
+return Redirect::to('foo/bar')->withInput(Input::get());
+return Redirect::to('foo/bar')->withInput(Input::except('password'));
+return Redirect::to('foo/bar')->withErrors($validator);
+return Redirect::back();
+return Redirect::route('foobar');
+return Redirect::route('foobar', array('value'));
+return Redirect::route('foobar', array('key' => 'value'));
+return Redirect::action('FooController@index');
+return Redirect::action('FooController@baz', array('value'));
+return Redirect::action('FooController@baz', array('key' => 'value'));
+			</pre>
+
+			<h4><a name="ioc" href="#ioc">IoC</a></h4>
+			<pre class="prettyprint lang-php">App::bind('foo', function($app){ return new Foo; });
+App::make('foo');
+App::make('FooBar'); // If this class exists, it's returned
+App::singleton('foo', function(){ return new Foo; });
+App::instance('foo', new Foo);
+App::bind('FooRepositoryInterface', 'BarRepository');
+App::register('FooServiceProvider');
+App::resolving(function($object){}); // Listen for object resolution
+			</pre>
+
+			<h4><a name="security" href="#security">Security</a></h4>
+			<h6>Passwords</h6>
+			<pre class="prettyprint lang-php">Hash::make('secretpassword');
+Hash::check('secretpassword', $hashedPassword);
+Hash::needsRehash($hashedPassword);
+			</pre>
+			<h6>Auth</h6>
+			<pre class="prettyprint lang-php">Auth::check(); // Check if the user is logged in
+Auth::user();
+Auth::attempt(array('email' => $email, 'password' => $password));
+Auth::attempt($credentials, true); // Remember user login
+Auth::once($credentials); // Log in for a single request
+Auth::login(User::find(1));
+Auth::loginUsingId(1);
+Auth::logout();
+Auth::validate($credentials);
+Auth::basic('username');
+Auth::onceBasic();
+Password::remind($credentials, function($message, $user){});
+			</pre>
+
+			<h6>Encryption</h6>
+			<pre class="prettyprint lang-php">Crypt::encrypt('secretstring');
+Crypt::decrypt($encryptedString);
+Crypt::setMode('ctr');
+Crypt::setCipher($cipher);
+			</pre>
+
+			<h4><a name="validation" href="#validation">Validation</a></h4>
+			<pre class="prettyprint lang-php">Validator::make(
+	array('key' => 'Foo'),
+	array('key' => 'required|in:Foo')
+);
+Validator::extend('foo', function($attribute, $value, $params){});
+Validator::extend('foo', 'FooValidator@validate');
+Validator::resolver(function($translator, $data, $rules, $msgs)
+{
+	return new FooValidator($translator, $data, $rules, $msgs);
+});
+			</pre>
+
+			<h6>Rules</h6>
+			<pre class="prettyprint lang-php">accepted
+active_url
+after:YYYY-MM-DD
+before:YYYY-MM-DD
+alpha
+alpha_dash
+alpha_num
+between:1,10
+confirmed
+date
+date_format:YYYY-MM-DD
+different:fieldname
+email
+exists:table,column
+image
+in:foo,bar,baz
+not_in:foo,bar,baz
+integer
+numeric
+ip
+max:value
+min:value
+mimes:jpeg,png
+regex:[0-9]
+required
+required_if:field,value
+required_with:foo,bar,baz
+required_without:foo,bar,baz
+same:field
+size:value
+unique:table,column,except,idColumn
+url
+
+			</pre>
+			
+		</div>
+		<div class="large-4 columnsi code-column">
+			<h4><a name="views" href="#views">Views</a></h4>
+			<pre class="prettyprint lang-php">View::make('path/to/view');
+View::make('foo/bar')->with('key', 'value');
+View::make('foo/bar', array('key' => 'value'));
+// Share a value across all views
+View::share('key', 'value');
+// Nesting views
+View::make('foo/bar')->nest('name', 'foo/baz', $data);
+// Register a view composer
+View::composer('viewname', function($view){});
+//Register multiple views to a composer
+View::composer(array('view1', 'view2'), function($view){});
+// Register a composer class
+View::composer('viewname', 'FooComposer');
+View::creator('viewname', function($view){});
+			</pre>
+
+			<h4><a name="blade" href="#blade">Blade Templates</a></h4>
+			<pre class="prettyprint lang-php">@extends('layout.name')
+@section('name') // Begin a section
+@stop // End a section
+@yield('name') // Show a section name in a template
+@include('view.name')
+@include('view.name', array('key' => 'value'));
+@lang('messages.name')
+@choice('messages.name', 1);
+@if
+@else
+@elseif
+@endif
+@unless
+@endunless
+@for
+@endfor
+@foreach
+@endforeach
+@while
+@endwhile
+{{ $var  }} // Echo content
+{{{ $var }}} // Echo escaped content
+{{-- Blade Comment --}}
+			</pre>
+
+			<h4><a name="forms" href="#forms">Forms</a></h4>
+			<pre class="prettyprint lang-php">Form::open(array('url' => 'foo/bar', 'method' => 'PUT'));
+Form::open(array('route' => 'foo.bar'));
+Form::open(array('route' => array('foo.bar', $parameter)));
+Form::open(array('action' => 'FooController@method'));
+Form::open(array('action' => array('FooController@method', $parameter)));
+Form::open(array('url' => 'foo/bar', 'files' => true));
+Form::token();
+Form::model($foo, array('route' => array('foo.bar', $foo->bar)));
+			</pre>
+
+			<h6>Form Elements</h6>
+			<pre class="prettyprint lang-php">Form::label('id', 'Description');
+Form::label('id', 'Description', array('class' => 'foo'));
+Form::text('name');
+Form::text('name', $value);
+Form::hidden('foo', $value);
+Form::password('password');
+Form::email('name', $value, array());
+Form::file('name', array());
+Form::checkbox('name', 'value');
+Form::radio('name', 'value');
+Form::select('name', array('key' => 'value'));
+Form::select('name', array('key' => 'value'), 'key');
+Form::submit('Submit!');
+Form::macro('fooField', function()
+{
+	return '&lt;input type="custom"/&gt;';
+});
+Form::fooField();
+			</pre>
+
+			<h4><a name="html" href="#html">HTML Builder</a></h4>
+			<pre class="prettyprint lang-php">HTML::macro('name', function(){});
+HTML::entities($value);
+HTML::decode($value);
+HTML::script($url, $attributes);
+HTML::style($url, $attributes);
+HTML::link($url, 'title', $attributes, $secure);
+HTML::secureLink($url, 'title', $attributes);
+HTML::linkAsset($url, 'title', $attributes, $secure);
+HTML::linkSecureAsset($url, 'title', $attributes);
+HTML::linkRoute($name, 'title', $parameters, $attributes);
+HTML::linkAction($action, 'title', $parameters, $attributes);
+HTML::mailto($email, 'title', $attributes);
+HTML::email($email);
+HTML::ol($list, $attributes);
+HTML::ul($list, $attributes);
+HTML::listing($type, $list, $attributes);
+HTML::listingElement($key, $type, $value);
+HTML::nestedListing($key, $type, $value);
+HTML::attributes($attributes);
+HTML::attributeElement($key, $value);
+HTML::obfuscate($value);
+			</pre>
+
+			<h4><a name="str" href="#str">Strings</a></h4>
+			<pre class="prettyprint lang-php">Str::ascii($value) // Transliterate a UTF-8 value to ASCII.
+Str::camel($value)
+Str::contains($haystack, $needle)
+Str::endsWith($haystack, $needles)
+Str::finish($value, $cap) // Cap a string with a single instance of a given value.
+Str::is($pattern, $value)
+Str::length($value)
+Str::limit($value, $limit = 100, $end = '...')
+Str::lower($value)
+Str::words($value, $words = 100, $end = '...')
+Str::plural($value, $count = 2)
+Str::random($length = 16) // Generate a more truly "random" alpha-numeric string.
+Str::quickRandom($length = 16) // Generate a "random" alpha-numeric string.
+Str::upper($value)
+Str::title($value)
+Str::singular($value)
+Str::slug($title, $separator = '-')
+Str::snake($value, $delimiter = '_')
+Str::startsWith($haystack, $needles)
+Str::studly($value) // Convert a value to studly caps case.
+Str::macro($name, $macro)
+			</pre>
+			
+
+			<h4><a name="helpers" href="#helpers">Helpers</a></h4>
+			<h6>Arrays</h6>
+			<pre class="prettyprint lang-php">array_add($array, 'key', 'value');
+array_build($array, function(){});
+array_divide($array);
+array_dot($array);
+array_except($array, array('key'));
+array_fetch($array, 'key');
+array_first($array, function($key, $value){}, $default);
+array_flatten($array); // Strips keys from the array
+array_forget($array, 'foo');
+array_forget($array, 'foo.bar'); // Dot notation
+array_get($array, 'foo', 'default');
+array_get($array, 'foo.bar', 'default');
+array_only($array, array('key'));
+array_pluck($array, 'key'); // Return array of key => values
+array_pull($array, 'key'); // Return and remove 'key' from array
+array_set($array, 'key', 'value');
+array_set($array, 'key.subkey', 'value'); // Dot notation
+array_sort($array, function(){});
+head($array); // First element of an array
+last($array); // Last element of an array
+			</pre>
+			<h6>Paths</h6>
+			<pre class="prettyprint lang-php">app_path();
+public_path();
+base_path(); // App root path
+storage_path();
+			</pre>
+			<h6>Strings</h6>
+			<pre class="prettyprint lang-php">
+camel_case($value);
+class_basename($class);
+e('&lt;html&gt;'); // Escape a string
+starts_with('Foo bar.', 'Foo');
+ends_with('Foo bar.', 'bar.');
+snake_case('fooBar');
+str_contains('Hello foo bar.', 'foo');
+str_finish('foo/bar', '/'); // Result: foo/bar/
+str_is('foo*', 'foobar');
+str_plural('car');
+str_random(25);
+str_singular('cars');
+studly_case('foo_bar'); // Result: FooBar
+trans('foo.bar');
+trans_choice('foo.bar', $count);
+			</pre>
+			<h6>URLs and Links</h6>
+			<pre class="prettyprint lang-php">action('FooController@method', $parameters);
+link_to('foo/bar', $title, $attributes, $secure);
+link_to_asset('img/foo.jpg', $title, $attributes, $secure);
+link_to_route('route.name', $title, $parameters, $attributes);
+link_to_action('FooController@method', $title, $params, $attrs);
+asset('img/photo.jpg', $title, $attributes); // HTML Link
+secure_asset('img/photo.jpg', $title, $attributes); // HTTPS link
+secure_url('path', $parameters);
+route($route, $parameters, $absolute = true);
+url('path', $parameters = array(), $secure = null);
+		</pre>
+		<h6>Miscellaneous</h6>
+		<pre class="prettyprint lang-php">
+csrf_token();
+dd($value);
+value(function(){ return 'bar'; });
+with(new Foo)->chainedMethod();
+			</pre>
+
+		</div>
+	</div>
+	<script src="./assets/js/jquery-1.10.2.min.js"></script>
+	<script src="./assets/js/google-code-prettify/prettify.js"></script>
+	<script type="text/javascript" src="./assets/js/app.js"></script>
+</body>
+</html>
